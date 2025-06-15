@@ -3,6 +3,7 @@ import { notFound } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { ArrowLeft } from "lucide-react"
+import { AddTaskDialog } from "./add-task-dialog"
 
 const prisma = new PrismaClient()
 
@@ -85,14 +86,18 @@ export default async function BoardPage({ params }: PageProps) {
                     <div className="flex items-center justify-between mt-2">
                       <span
                         className={`text-xs px-2 py-1 rounded-full ${
-                          task.priority === "HIGH"
+                          task.priority === "URGENT"
+                            ? "bg-red-500 text-white"
+                            : task.priority === "HIGH"
                             ? "bg-red-100 text-red-700"
                             : task.priority === "MEDIUM"
                             ? "bg-yellow-100 text-yellow-700"
                             : "bg-green-100 text-green-700"
                         }`}
                       >
-                        {task.priority}
+                        {task.priority === "LOW" ? "低" : 
+                         task.priority === "MEDIUM" ? "中" : 
+                         task.priority === "HIGH" ? "高" : "緊急"}
                       </span>
                       {task.dueDate && (
                         <span className="text-xs text-muted-foreground">
@@ -110,6 +115,10 @@ export default async function BoardPage({ params }: PageProps) {
                     </p>
                   </div>
                 )}
+              </div>
+              
+              <div className="mt-4">
+                <AddTaskDialog columnId={column.id} boardId={board.id} />
               </div>
             </div>
           ))}

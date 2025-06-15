@@ -47,3 +47,32 @@ The application uses a hierarchical data model:
 - Database uses PostgreSQL via Docker Compose
 - Uses TypeScript path aliases configured in components.json
 - Tailwind CSS uses CSS variables and neutral base color
+
+## Development Workflow
+
+### Setting Up New Features
+1. Start database: `docker-compose up -d`
+2. Generate Prisma client: `npx prisma generate`
+3. Start dev server: `npm run dev`
+
+### Server Actions Pattern
+- Server Actions are placed in `actions.ts` files within route directories
+- Use `"use server"` directive and form data validation with Zod
+- Always call `revalidatePath()` after data mutations
+- Handle errors gracefully and return structured results
+
+### UI Component Integration
+- New shadcn/ui components should be added to `components/ui/`
+- Use TypeScript path aliases: `@/components`, `@/lib`, etc.
+- Dialog components use Radix UI primitives with custom styling
+- Form handling combines Server Actions with client-side state management
+
+### Database Position Management
+- Tasks and columns use position-based ordering (integer field)
+- When adding new items, query for the highest position and increment by 1
+- Unique constraints exist on `(columnId, position)` and `(boardId, position)`
+
+### Priority System
+- Tasks have four priority levels: LOW, MEDIUM, HIGH, URGENT
+- Priority display uses color-coded badges with Japanese labels
+- Default priority is MEDIUM for new tasks
